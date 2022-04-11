@@ -3,6 +3,7 @@ report 50103 "WDC Update Cheque Code"
     ProcessingOnly = true;
     UsageCategory = ReportsAndAnalysis;
     EnableHyperlinks = true;
+    Permissions = TableData "Cheque Header" = rimd;
 
     dataset
     {
@@ -12,11 +13,11 @@ report 50103 "WDC Update Cheque Code"
 
             trigger OnAfterGetRecord()
             begin
-                //Bloquer les cheques
+                //Block cheques
                 ChequeToRename.Get("Cheque Header"."Cheque No.");
                 ChequeToRename.Blocked := true;
                 if StrLen(ChequeToRename.Comment) = 0 then
-                    ChequeToRename.Comment := 'Old cheque blocked';
+                    ChequeToRename.Comment := Text001;
                 ChequeToRename.Modify();
 
                 //Rename cheque No.
@@ -38,4 +39,5 @@ report 50103 "WDC Update Cheque Code"
     }
     var
         ChequeToRename: Record "Cheque Header";
+        Text001: label 'Old cheque blocked';
 }
