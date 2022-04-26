@@ -1833,48 +1833,22 @@
                       <KeepTogether>true</KeepTogether>
                     </TablixMember>
                     <TablixMember>
-                      <Group Name="Group1">
-                        <GroupExpressions>
-                          <GroupExpression>=Fields!TempCurrencyTotalBuffer_Currency_Code_.Value</GroupExpression>
-                        </GroupExpressions>
-                        <Filters>
-                          <Filter>
-                            <FilterExpression>=Fields!TempCurrencyTotalBuffer_Total_Amount_.Value</FilterExpression>
-                            <Operator>Equal</Operator>
-                            <FilterValues>
-                              <FilterValue>=nothing</FilterValue>
-                            </FilterValues>
-                          </Filter>
-                        </Filters>
+                      <Group Name="Table1_Details_Group">
+                        <DataElementName>Detail</DataElementName>
                       </Group>
-                      <SortExpressions>
-                        <SortExpression>
-                          <Value>=Fields!TempCurrencyTotalBuffer_Currency_Code_.Value</Value>
-                        </SortExpression>
-                      </SortExpressions>
                       <TablixMembers>
                         <TablixMember>
-                          <Group Name="Table1_Details_Group">
-                            <DataElementName>Detail</DataElementName>
-                          </Group>
-                          <TablixMembers>
-                            <TablixMember>
-                              <Visibility>
-                                <Hidden>=IIF(Fields!Cust_Ledger_Entry_Document_No_.Value&lt;&gt;"",False,True)</Hidden>
-                              </Visibility>
-                            </TablixMember>
-                          </TablixMembers>
                           <Visibility>
-                            <ToggleItem>Customer_No_</ToggleItem>
+                            <Hidden>=IIF(Fields!Cust_Ledger_Entry_Document_No_.Value&lt;&gt;"",False,True)</Hidden>
                           </Visibility>
-                          <DataElementName>Detail_Collection</DataElementName>
-                          <DataElementOutput>Output</DataElementOutput>
-                          <KeepTogether>true</KeepTogether>
                         </TablixMember>
                       </TablixMembers>
                       <Visibility>
                         <ToggleItem>Customer_No_</ToggleItem>
                       </Visibility>
+                      <DataElementName>Detail_Collection</DataElementName>
+                      <DataElementOutput>Output</DataElementOutput>
+                      <KeepTogether>true</KeepTogether>
                     </TablixMember>
                     <TablixMember>
                       <Group Name="Group2">

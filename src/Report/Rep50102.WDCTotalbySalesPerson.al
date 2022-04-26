@@ -2,12 +2,12 @@ report 50102 "WDC Total by Sales Person"
 {
     DefaultLayout = RDLC;
     RDLCLayout = './src/Report/RDLC/WDCTotalBySalesPerson.rdl';
-    AdditionalSearchTerms = 'Customer Inv. by Cheque';
+    AdditionalSearchTerms = 'Total by Sales Person';
     ApplicationArea = Basic, Suite;
-    Caption = 'Customer Inv. by Cheque';
+    Caption = 'Total by Sales Person';
     EnableHyperlinks = true;
     UsageCategory = ReportsAndAnalysis;
-    Description = 'Customer Inv. by Cheque';
+    Description = 'Total by Sales Person';
     dataset
     {
         dataitem(Header; "Integer")
