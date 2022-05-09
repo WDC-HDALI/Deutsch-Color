@@ -18,6 +18,10 @@ table 50100 "WDC payment status"
         {
             DataClassification = ToBeClassified;
         }
+        field(4; "Unpaid Step"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+        }
 
     }
     keys

@@ -47,7 +47,9 @@ tableextension 50100 "WDC GenJournalLineTabExt" extends "Gen. Journal Line" //81
                     If ("Account Type" = "Account Type"::Customer) or (rec."Source Type" = rec."Source Type"::Customer) then begin
                         "Account No." := lCHQHeader."Customer No.";
                     end;
-
+                end;
+                If ("Bal. Account Type" = "Bal. Account Type"::Customer) then begin
+                    "Bal. Account No." := Rec."Customer No.";
                 end;
 
 

@@ -116,9 +116,12 @@ codeunit 50101 "WDC Payment Aplly"
         lCustLedgerEntry.SetRange("Document Type", lCustLedgerEntry."Document Type"::Payment);
         lCustLedgerEntry.SetRange("Document No.", pChequeNo);
         if lCustLedgerEntry.FindFirst() Then begin
-            lCustLedgerEntry.Open := false;
-            lCustLedgerEntry.Modify;
-        end;
+            lCustLedgerEntry.CalcFields("Remaining Amt. (LCY)");
+            if lCustLedgerEntry."Remaining Amt. (LCY)" = 0 Then begin
+                lCustLedgerEntry.Open := false;
+                lCustLedgerEntry.Modify;
+            end;
+        End;
     end;
 
     procedure GetTransactionEntry(pChqNo: Code[20]): Integer

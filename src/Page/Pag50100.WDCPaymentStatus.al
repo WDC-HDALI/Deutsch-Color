@@ -25,6 +25,11 @@ page 50100 "WDC Payment Status"
                 {
                     ApplicationArea = all;
                 }
+
+                field("Unpaid Step"; Rec."Unpaid Step")
+                {
+                    ApplicationArea = all;
+                }
             }
         }
     }
