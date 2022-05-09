@@ -16,14 +16,13 @@ codeunit 50100 "ST PaymentSubscribers"
             Exit;
         lGenJournalLine.Reset();
         lGenJournalLine.SetRange("Journal Batch Name", CurrentJnlBatchName);
-        if not lGenJournalLine.FindFirst() then
-            Exit;
-        repeat
-            lGenJournalLine."Code Status" := lBatchName."Code Status";
-            lGenJournalLine."Payment Type" := lBatchName."Payment Type";
-            lGenJournalLine."Description Status" := lBatchName."Description Status";
-            lGenJournalLine.Modify;
-        Until lGenJournalLine.Next = 0;
+        if lGenJournalLine.FindFirst() then
+            repeat
+                lGenJournalLine."Code Status" := lBatchName."Code Status";
+                lGenJournalLine."Payment Type" := lBatchName."Payment Type";
+                lGenJournalLine."Description Status" := lBatchName."Description Status";
+                lGenJournalLine.Modify;
+            Until lGenJournalLine.Next = 0;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Line", 'OnAfterInitGLEntry', '', FALSE, FALSE)]
@@ -101,6 +100,14 @@ codeunit 50100 "ST PaymentSubscribers"
             Error(Ltext001);
     End;
 
+    [EventSubscriber(ObjectType::Page, Page::"Payment Journal", 'OnAfterValidateEvent', 'Bal. Account Type', FALSE, FALSE)]
+    local procedure OnAfterValidateEvent(var Rec: Record "Gen. Journal Line")
+    var
+    Begin
+        If (Rec."Bal. Account Type" = Rec."Bal. Account Type"::Customer) then begin
+            Rec."Bal. Account No." := Rec."Customer No.";
+        end;
+    End;
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Line", 'OnAfterPostGenJnlLine', '', FALSE, FALSE)]
@@ -191,23 +198,23 @@ codeunit 50100 "ST PaymentSubscribers"
             End;
     End;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Reverse", 'OnBeforeReverse', '', FALSE, FALSE)]
-    Local procedure OnBeforeReverseTransaction(var ReversalEntry: Record "Reversal Entry"; var ReversalEntry2: Record "Reversal Entry"; var IsHandled: Boolean)
-    Var
-        lChequeHeader: Record "Cheque Header";
-        lGenJournalBatch: Record "Gen. Journal Batch";
-        Ltext001: Label 'You cannot reverse a %1 with status %2';
-    begin
-        if ReversalEntry."Document Type" = ReversalEntry."Document Type"::Payment then
-            If lChequeHeader.Get(ReversalEntry."Document No.") then begin
-                lChequeHeader.CalcFields("Description Status");
-                lGenJournalBatch.Reset();
-                lGenJournalBatch.SetRange("Code Status", lChequeHeader."Code Status");
-                If lGenJournalBatch.FindFirst() then
-                    If lGenJournalBatch."Last Step of Cheque" or lGenJournalBatch."Last Step of Traite" THEN
-                        Error(Ltext001, lChequeHeader."Cheque/Traite", lChequeHeader."Description Status");
-            end;
-    end;
+    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Reverse", 'OnBeforeReverse', '', FALSE, FALSE)]
+    // Local procedure OnBeforeReverseTransaction(var ReversalEntry: Record "Reversal Entry"; var ReversalEntry2: Record "Reversal Entry"; var IsHandled: Boolean)
+    // Var
+    //     lChequeHeader: Record "Cheque Header";
+    //     lGenJournalBatch: Record "Gen. Journal Batch";
+    //     Ltext001: Label 'You cannot reverse a %1 with status %2';
+    // begin
+    //     if ReversalEntry."Document Type" = ReversalEntry."Document Type"::Payment then
+    //         If lChequeHeader.Get(ReversalEntry."Document No.") then begin
+    //             lChequeHeader.CalcFields("Description Status");
+    //             lGenJournalBatch.Reset();
+    //             lGenJournalBatch.SetRange("Code Status", lChequeHeader."Code Status");
+    //             If lGenJournalBatch.FindFirst() then
+    //                 If lGenJournalBatch."Last Step of Cheque" or lGenJournalBatch."Last Step of Traite" THEN
+    //                     Error(Ltext001, lChequeHeader."Cheque/Traite", lChequeHeader."Description Status");
+    //         end;
+    // end;
 
     [EventSubscriber(ObjectType::Table, database::"Cheque Line", 'OnAfterValidateEvent', 'Invoice No.', FALSE, FALSE)]
     Local procedure OnAftervalidateInvoiceTable(Rec: Record "Cheque Line")
