@@ -41,6 +41,16 @@ tableextension 50103 "WDC CustLedgerEntrTabExt" extends "Cust. Ledger Entry" //2
         }
 
     }
+    keys
+    {
+        key(Key1; "Cheque No.", "Code Status")
+        {
 
+        }
+        key(Key2; "Cheque No.")
+        {
+
+        }
+    }
 }
 

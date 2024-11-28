@@ -17,10 +17,10 @@ pageextension 50105 "WDCChequeCardPagExt" extends "Cheque Card" //50006
             {
                 ApplicationArea = all;
             }
-            field("Collection date"; Rec."Collection date")
-            {
-                ApplicationArea = all;
-            }
+            // field("Collection date"; Rec."Collection date")
+            // {
+            //     ApplicationArea = all;
+            // }
         }
 
     }

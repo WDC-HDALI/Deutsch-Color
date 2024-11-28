@@ -24,7 +24,7 @@ pageextension 50102 "WDC PaymentJournalPagExt" extends "Payment Journal" //256
                     lBatchName: Record 232;
                     lCHQHeader: Record "Cheque Header";
                 begin
-                    Clear("Document No.");
+                    Clear(Rec."Document No.");
                     Rec.checkbatchName(Rec."Cheque No.");
                     If Rec."Cheque No." <> '' then begin
                         Rec."Document No." := Rec."Cheque No.";

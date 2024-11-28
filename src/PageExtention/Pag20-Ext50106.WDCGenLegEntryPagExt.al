@@ -40,6 +40,17 @@ pageextension 50106 "WDC GenLegEntryPagExt" extends "General Ledger Entries" //2
 
     actions
     {
-
+        addlast(Creation)
+        {
+            action(WDC_UpdatePostingGroup)
+            {
+                ApplicationArea = All;
+                Caption = 'WDC Insert Correc Glentries';
+                Image = UpdateUnitCost;
+                RunObject = xmlport "WDC Import GL Entries";
+                Promoted = true;
+                PromotedIsBig = true;
+            }
+        }
     }
 }
