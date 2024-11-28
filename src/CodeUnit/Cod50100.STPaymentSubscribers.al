@@ -168,6 +168,9 @@ codeunit 50100 "ST PaymentSubscribers"
         end;
     End;
 
+
+
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Reverse", 'OnAfterReverseGLEntry', '', FALSE, FALSE)]
     Local procedure OnAfterReverseTransaction(var GLEntry: Record "G/L Entry")
     Var
@@ -177,29 +180,15 @@ codeunit 50100 "ST PaymentSubscribers"
         LPaymentStatus: Record "WDC payment status";
     begin
         if GLEntry."Document Type" = GLEntry."Document Type"::Payment then
-            If lChequeHeader.Get(GLEntry."Cheque No.") then begin
-                lChequeHeader."Code Status" := lChequeHeader."Previous Code Status";
-                lChequeHeader."Cheque Reversed" := true;
-                lChequeHeader.Modify;
-
-                if LPaymentStatus.Get(lChequeHeader."Previous Code Status") Then;
-                lCustomerLedgEntry.Reset();
-                lCustomerLedgEntry.SetRange("Cheque No.", GLEntry."Cheque No.");
-                If lCustomerLedgEntry.FindFirst() Then
-                    repeat
-                        lCustomerLedgEntry."Code Status" := lChequeHeader."Previous Code Status";
-                        lCustomerLedgEntry."Description Status" := LPaymentStatus."Description Status";
-                        lCustomerLedgEntry.Modify;
-                    Until lCustomerLedgEntry.Next = 0;
-
-                LGLEntry.Reset();
-                LGLEntry.SetRange("Cheque No.", GLEntry."Cheque No.");
-                If LGLEntry.FindFirst then
-                    repeat
-                        LGLEntry."Code Status" := lChequeHeader."Previous Code Status";
-                        LGLEntry."Description Status" := LPaymentStatus."Description Status";
-                        LGLEntry.Modify;
-                    Until LGLEntry.Next = 0;
+            if GLEntry."Cheque No." <> '' then begin
+                If lChequeHeader.Get(GLEntry."Cheque No.") then begin
+                    lChequeHeader."Code Status" := lChequeHeader."Previous Code Status";
+                    lChequeHeader."Cheque Reversed" := true;
+                    lChequeHeader.Modify;
+                    if LPaymentStatus.Get(lChequeHeader."Previous Code Status") Then;
+                    SetCustLedgerEntryStatus(GLEntry."Cheque No.", lChequeHeader."Previous Code Status", LPaymentStatus."Description Status");
+                    SetGLEntryStatus(GLEntry."Cheque No.", lChequeHeader."Previous Code Status", LPaymentStatus."Description Status");
+                end;
             End;
     end;
 
@@ -217,23 +206,6 @@ codeunit 50100 "ST PaymentSubscribers"
             End;
     End;
 
-    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Reverse", 'OnBeforeReverse', '', FALSE, FALSE)]
-    // Local procedure OnBeforeReverseTransaction(var ReversalEntry: Record "Reversal Entry"; var ReversalEntry2: Record "Reversal Entry"; var IsHandled: Boolean)
-    // Var
-    //     lChequeHeader: Record "Cheque Header";
-    //     lGenJournalBatch: Record "Gen. Journal Batch";
-    //     Ltext001: Label 'You cannot reverse a %1 with status %2';
-    // begin
-    //     if ReversalEntry."Document Type" = ReversalEntry."Document Type"::Payment then
-    //         If lChequeHeader.Get(ReversalEntry."Document No.") then begin
-    //             lChequeHeader.CalcFields("Description Status");
-    //             lGenJournalBatch.Reset();
-    //             lGenJournalBatch.SetRange("Code Status", lChequeHeader."Code Status");
-    //             If lGenJournalBatch.FindFirst() then
-    //                 If lGenJournalBatch."Last Step of Cheque" or lGenJournalBatch."Last Step of Traite" THEN
-    //                     Error(Ltext001, lChequeHeader."Cheque/Traite", lChequeHeader."Description Status");
-    //         end;
-    // end;
 
     [EventSubscriber(ObjectType::Table, database::"Cheque Line", 'OnAfterValidateEvent', 'Invoice No.', FALSE, FALSE)]
     Local procedure OnAftervalidateInvoiceTable(Rec: Record "Cheque Line")
@@ -289,14 +261,28 @@ codeunit 50100 "ST PaymentSubscribers"
         lCustomerLedgEntry: Record "Cust. Ledger Entry";
     begin
         lCustomerLedgEntry.Reset();
+        lCustomerLedgEntry.SetCurrentKey("Cheque No.");
         lCustomerLedgEntry.SetRange("Cheque No.", pChqNo);
-        lCustomerLedgEntry.SetRange("Document Type", lCustomerLedgEntry."Document Type"::Payment);
-        if lCustomerLedgEntry.FindFirst() then
-            repeat
-                lCustomerLedgEntry."Code Status" := pStatusCode;
-                lCustomerLedgEntry."Description Status" := pDescriptionStatus;
-                lCustomerLedgEntry.Modify;
-            until lCustomerLedgEntry.Next = 0;
+        //lCustomerLedgEntry.SetRange("Document Type", lCustomerLedgEntry."Document Type"::Payment);
+        if lCustomerLedgEntry.FindFirst() then Begin
+            lCustomerLedgEntry.ModifyAll("Code Status", pStatusCode);
+            lCustomerLedgEntry.ModifyAll("Description Status", pDescriptionStatus);
+
+        end;
     end;
+
+    procedure SetGLEntryStatus(pChqNo: Code[20]; "pStatusCode": Code[20]; pDescriptionStatus: Text[100])
+    var
+        LGLEntry: Record "G/L Entry";
+    begin
+        LGLEntry.Reset;
+        LGLEntry.SetCurrentKey("Cheque No.");
+        LGLEntry.SetRange("Cheque No.", pChqNo);
+        If LGLEntry.FindSet then begin
+            LGLEntry.ModifyAll("Code Status", pStatusCode);
+            LGLEntry.ModifyAll("Description Status", pDescriptionStatus);
+        end;
+    End;
+
 
 }

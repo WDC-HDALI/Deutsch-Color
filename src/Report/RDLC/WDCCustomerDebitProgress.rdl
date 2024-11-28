@@ -4083,6 +4083,12 @@ kp+fj1b6UHll4SMeWjnR2sYKDg5GCycesdzo6ChqnlDhUVBQkPiNiYnxkIMHD7Lo6Ghxzwj+LolIXFkG
         <Field Name="PrviousBalanceFormat">
           <DataField>PrviousBalanceFormat</DataField>
         </Field>
+        <Field Name="PrviousBalanceGL">
+          <DataField>PrviousBalanceGL</DataField>
+        </Field>
+        <Field Name="PrviousBalanceGLFormat">
+          <DataField>PrviousBalanceGLFormat</DataField>
+        </Field>
         <Field Name="InvoiceAndCrdMemo">
           <DataField>InvoiceAndCrdMemo</DataField>
         </Field>

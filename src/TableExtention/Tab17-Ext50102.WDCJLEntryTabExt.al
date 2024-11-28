@@ -32,5 +32,21 @@ tableextension 50102 "WDC JLEntryTabExt" extends "G/L Entry" //17
 
         }
     }
+    keys
+    {
+        key(Key1; "Customer No.", "Cheque No.", "Code Status")
+        {
+
+        }
+        key(Key2; "Cheque No.", "Code Status")
+        {
+
+        }
+        key(Key3; "Cheque No.")
+        {
+
+        }
+
+    }
 
 }
